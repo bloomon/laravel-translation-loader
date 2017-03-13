@@ -9,6 +9,7 @@ use Waavi\Translation\Loaders\CacheLoader;
 use Waavi\Translation\Loaders\DatabaseLoader;
 use Waavi\Translation\Loaders\FileLoader;
 use Waavi\Translation\Loaders\MixedLoader;
+use Waavi\Translation\Loaders\APILoader;
 use Waavi\Translation\Middleware\TranslationMiddleware;
 use Waavi\Translation\Models\Translation;
 use Waavi\Translation\Repositories\LanguageRepository;
