@@ -89,9 +89,12 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider
                 case 'database':
                     $loader = new DatabaseLoader($defaultLocale, $app->make(TranslationRepository::class));
                     break;
-                default:case 'files':
+                case 'files':
                     $laravelFileLoader = new LaravelFileLoader($app['files'], $app->basePath() . '/resources/lang');
                     $loader            = new FileLoader($defaultLocale, $laravelFileLoader);
+                    break;
+                default: case 'api':
+                    $loader            = new APILoader($defaultLocale, $app['config']->get('translator.apiUrl'));
                     break;
             }
             if ($app['config']->get('translator.cache.enabled')) {
