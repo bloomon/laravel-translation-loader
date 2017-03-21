@@ -16,7 +16,7 @@ class APILoader extends Loader implements LoaderInterface
      * api url to retrieve translation data from.
      * @var string
      */
-    protected $apiUrl;
+    protected $apiUri;
 
     /**
      *  Create a new mixed loader instance.
@@ -25,10 +25,10 @@ class APILoader extends Loader implements LoaderInterface
      *  @param  \Illuminate\Translation\FileLoader  $laravelFileLoader
      *  @return void
      */
-    public function __construct($defaultLocale, $apiUrl)
+    public function __construct($defaultLocale, $apiUri)
     {
         parent::__construct($defaultLocale);
-        $this->apiUrl = $apiUrl;
+        $this->apiUri = $apiUri;
         $this->defaultLocale = $defaultLocale;
     }
 
@@ -42,12 +42,18 @@ class APILoader extends Loader implements LoaderInterface
      */
     public function loadSource($locale, $group, $namespace = '*')
     {
-        $client = new Client();
-        $res = $client->request('GET', $this->apiUrl, ['locale'=>$locale]);
+        $client = new Client([
+          'base_uri' => $this->apiUri
+        ]);
+        $res = $client->request('GET',
+          '/translations',
+          ['query' => [
+            'locale'=>$locale,
+            'group'=>$group
+          ]]
+        );
 
-        $data = $res->getBody();
-
-        //$data = file_get_contents($this->apiUrl);
+        $data = $res->getBody()->getContents();
 
         return json_decode($data, true);
     }

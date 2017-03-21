@@ -17,9 +17,6 @@ abstract class Loader implements LoaderInterface
     /**
      *  Create a new loader instance.
      *
-     *  @param  \Waavi\Translation\Repositories\LanguageRepository      $languageRepository
-     *  @param  \Waavi\Translation\Repositories\TranslationRepository   $translationRepository
-     *  @param  \Illuminate\Config\Repository                           $config
      */
     public function __construct($defaultLocale)
     {

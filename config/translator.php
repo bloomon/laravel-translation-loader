@@ -38,5 +38,6 @@ return [
         'suffix'  => env('TRANSLATION_CACHE_SUFFIX', 'translation'),
     ],
 
-    'apiUrl'            => 'localhost:3030/translations',
+    'apiUri'            => env('TRANSLATION_API_URI', 'translation'),
+    'apiPort'           => env('TRANSLATION_API_PORT', 3030)
 ];

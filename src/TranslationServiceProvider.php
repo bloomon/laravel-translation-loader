@@ -6,14 +6,11 @@ use Waavi\Translation\Cache\RepositoryFactory as CacheRepositoryFactory;
 use Waavi\Translation\Commands\CacheFlushCommand;
 use Waavi\Translation\Commands\FileLoaderCommand;
 use Waavi\Translation\Loaders\CacheLoader;
-use Waavi\Translation\Loaders\DatabaseLoader;
 use Waavi\Translation\Loaders\FileLoader;
 use Waavi\Translation\Loaders\MixedLoader;
 use Waavi\Translation\Loaders\APILoader;
 use Waavi\Translation\Middleware\TranslationMiddleware;
 use Waavi\Translation\Models\Translation;
-use Waavi\Translation\Repositories\LanguageRepository;
-use Waavi\Translation\Repositories\TranslationRepository;
 use Waavi\Translation\Routes\ResourceRegistrar;
 
 class TranslationServiceProvider extends LaravelTranslationServiceProvider
@@ -44,12 +41,11 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider
 
         parent::register();
         $this->registerCacheRepository();
-        $this->registerFileLoader();
         $this->registerCacheFlusher();
-        $this->app->singleton('translation.uri.localizer', UriLocalizer::class);
-        $this->app[\Illuminate\Routing\Router::class]->middleware('localize', TranslationMiddleware::class);
+        //$this->app->singleton('translation.uri.localizer', UriLocalizer::class);
+        //$this->app[\Illuminate\Routing\Router::class]->middleware('localize', TranslationMiddleware::class);
         // Fix issue with laravel prepending the locale to localize resource routes:
-        $this->app->bind('Illuminate\Routing\ResourceRegistrar', ResourceRegistrar::class);
+        //$this->app->bind('Illuminate\Routing\ResourceRegistrar', ResourceRegistrar::class);
     }
 
     /**
@@ -78,17 +74,7 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider
                 case 'mixed':
                     $laravelFileLoader = new LaravelFileLoader($app['files'], $app->basePath() . '/resources/lang');
                     $fileLoader        = new FileLoader($defaultLocale, $laravelFileLoader);
-                    $databaseLoader    = new DatabaseLoader($defaultLocale, $app->make(TranslationRepository::class));
-                    $loader            = new MixedLoader($defaultLocale, $fileLoader, $databaseLoader);
-                    break;
-                case 'mixed_db':
-                    $laravelFileLoader = new LaravelFileLoader($app['files'], $app->basePath() . '/resources/lang');
-                    $fileLoader        = new FileLoader($defaultLocale, $laravelFileLoader);
-                    $databaseLoader    = new DatabaseLoader($defaultLocale, $app->make(TranslationRepository::class));
-                    $loader            = new MixedLoader($defaultLocale, $databaseLoader, $fileLoader);
-                    break;
-                case 'database':
-                    $loader = new DatabaseLoader($defaultLocale, $app->make(TranslationRepository::class));
+                    $loader            = new MixedLoader($defaultLocale, $fileLoader);
                     break;
                 case 'files':
                     $laravelFileLoader = new LaravelFileLoader($app['files'], $app->basePath() . '/resources/lang');
@@ -118,24 +104,6 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider
             $cacheStore = $app['cache']->getStore();
             return CacheRepositoryFactory::make($cacheStore, $app['config']->get('translator.cache.suffix'));
         });
-    }
-
-    /**
-     * Register the translator:load language file loader.
-     *
-     * @return void
-     */
-    protected function registerFileLoader()
-    {
-        $app                   = $this->app;
-        $defaultLocale         = $app['config']->get('app.locale');
-        $languageRepository    = $app->make(LanguageRepository::class);
-        $translationRepository = $app->make(TranslationRepository::class);
-        $translationsPath      = $app->basePath() . '/resources/lang';
-        $command               = new FileLoaderCommand($languageRepository, $translationRepository, $app['files'], $translationsPath, $defaultLocale);
-
-        $this->app['command.translator:load'] = $command;
-        $this->commands('command.translator:load');
     }
 
     /**
