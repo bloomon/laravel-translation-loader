@@ -12,14 +12,14 @@ return [
     | Supported:
     |
     |   'mixed'         Both files and the database are queried for language entries, with files taking priority.
-    |   'database'      Use the database as the exclusive source for language entries.
+    |   'api'           Use the bloomon-translation API as the exclusive source for language entries.
     |   'files'         Use files as the exclusive source for language entries [Laravel's default].
      */
-    'source'            => env('TRANSLATION_SOURCE', 'api'),
+    'source'            => env('TRANSLATION_SOURCE', 'mixed'),
 
     // In case the files source is selected, please enter here the supported locales for your app.
     // Ex: ['en', 'es', 'fr']
-    'available_locales' => [],
+    'available_locales' => ['nl', 'en', 'de', 'be', 'da'],
 
     /*
     |--------------------------------------------------------------------------

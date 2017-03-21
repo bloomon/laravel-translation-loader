@@ -53,9 +53,18 @@ class APILoader extends Loader implements LoaderInterface
           ]]
         );
 
-        $data = $res->getBody()->getContents();
+        $rsContent = $res->getBody()->getContents();
+        $rawData = json_decode($rsContent, true);
+        $data = [];
 
-        return json_decode($data, true);
+        foreach ($rawData as $key => $translation) {
+          if ($group && substr($key, 0, strlen($group))==$group) {
+            $key = substr($key, strlen($group)+1);
+          }
+          $data[$key] = $translation;
+        }
+
+        return $data;
     }
 
     /**

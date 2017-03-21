@@ -9,9 +9,7 @@ use Waavi\Translation\Loaders\CacheLoader;
 use Waavi\Translation\Loaders\FileLoader;
 use Waavi\Translation\Loaders\MixedLoader;
 use Waavi\Translation\Loaders\APILoader;
-use Waavi\Translation\Middleware\TranslationMiddleware;
-use Waavi\Translation\Models\Translation;
-use Waavi\Translation\Routes\ResourceRegistrar;
+
 
 class TranslationServiceProvider extends LaravelTranslationServiceProvider
 {
@@ -39,10 +37,6 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider
         parent::register();
         $this->registerCacheRepository();
         $this->registerCacheFlusher();
-        //$this->app->singleton('translation.uri.localizer', UriLocalizer::class);
-        //$this->app[\Illuminate\Routing\Router::class]->middleware('localize', TranslationMiddleware::class);
-        // Fix issue with laravel prepending the locale to localize resource routes:
-        //$this->app->bind('Illuminate\Routing\ResourceRegistrar', ResourceRegistrar::class);
     }
 
     /**
@@ -69,9 +63,12 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider
             $loader        = null;
             switch ($source) {
                 case 'mixed':
+                    $apiUri            = $app['config']->get('translator.apiUri');
+                    $apiPort           = $app['config']->get('translator.apiPort');
+                    $apiLoader         = new APILoader($defaultLocale, $apiUri.':'.$apiPort);
                     $laravelFileLoader = new LaravelFileLoader($app['files'], $app->basePath() . '/resources/lang');
                     $fileLoader        = new FileLoader($defaultLocale, $laravelFileLoader);
-                    $loader            = new MixedLoader($defaultLocale, $fileLoader);
+                    $loader            = new MixedLoader($defaultLocale, $apiLoader, $fileLoader);
                     break;
                 case 'files':
                     $laravelFileLoader = new LaravelFileLoader($app['files'], $app->basePath() . '/resources/lang');
