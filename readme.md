@@ -1,3 +1,66 @@
+# Modification Note:
+
+## Introduction
+
+Adapted from [Wavvi/Translation](https://github.com/Waavi/translation) in order to provide different localization data source other than laravel's default translation file system. In our case we will be getting translation data mainly from our [bloomon-translation](https://github.com/bloomon/bloomon-translation) API while providing old file as secondary source for backward compatibility during transition period.
+
+## Prerequisite
+
+  You need to setup [bloomon-translation](https://github.com/bloomon/bloomon-translation) API reachable to your local api3/website.
+
+## Setup
+
+  Manually edit your composer.json file:
+
+	"require": {
+		"waavi/translation": "2.1.x"
+	}
+
+  Once installed, in your project's config/app.php file replace the following entry from the providers array:
+
+  	Illuminate\Translation\TranslationServiceProvider::class
+
+  with:
+
+  	Waavi\Translation\TranslationServiceProvider::class
+
+  Remove your config cache:
+
+  	php artisan config:cache
+
+  Publish both the configuration file and the migrations:
+
+  	php artisan vendor:publish
+
+## configuration
+
+  You may configure this package with the file:
+
+    config/translator.php
+
+  - 'source': specifies source where translator load data from.
+    - 'files': laravel's default method, load data from files exclusively.
+    - 'api': use bloomon-translation API as data source exclusively.
+    - 'mixed': using both loaders together with api data as primary data source.
+
+  - 'available_locales': an array of locales available. [NOTE] this is required for loading data from translation files.
+
+  - 'cache': translation cache settings.
+    - 'enabled'(env('TRANSLATION_CACHE_ENABLED')): true | false
+    - 'timeout'(env('TRANSLATION_CACHE_TIMEOUT'))
+    - 'suffix'(env('TRANSLATTION_CACHE_SUFFIX'))
+
+  - 'apiUri'(env('TRANSLATION_API_URI')): host address to bloomon-translation
+  - 'apiPort'(env('TRANSLATION_API_PORT')): port bloomon-translation is listening on.
+
+### data source
+
+## Commands
+
+
+
+# Original Readme content:
+
 # Better localization management for Laravel
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/waavi/translation.svg?style=flat-square)](https://packagist.org/packages/waavi/translation)
@@ -293,7 +356,7 @@ The provided methods are:
  Method   | Description
 :---------|:--------
 update($id, $text);									| Update an unlocked entry
-updateAndLock($id, $text);							| Update and lock an entry (locked or not) 
+updateAndLock($id, $text);							| Update and lock an entry (locked or not)
 allByLocale($locale, $perPage = 0);					| Get all by locale
 untranslated($locale, $perPage = 0, $text = null);	| Get all untranslated entries. If $text is set, entries will be filtered by partial matches to translation value.
 pendingReview($locale, $perPage = 0);				| List all entries pending review
