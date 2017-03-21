@@ -25,9 +25,6 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider
         $this->publishes([
             __DIR__ . '/../config/translator.php' => config_path('translator.php'),
         ]);
-        $this->publishes([
-            __DIR__ . '/../database/migrations/' => database_path('migrations'),
-        ], 'migrations');
     }
 
     /**
@@ -81,7 +78,9 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider
                     $loader            = new FileLoader($defaultLocale, $laravelFileLoader);
                     break;
                 default: case 'api':
-                    $loader            = new APILoader($defaultLocale, $app['config']->get('translator.apiUrl'));
+                    $apiUri            = $app['config']->get('translator.apiUri');
+                    $apiPort           = $app['config']->get('translator.apiPort');
+                    $loader            = new APILoader($defaultLocale, $apiUri.':'.$apiPort);
                     break;
             }
             if ($app['config']->get('translator.cache.enabled')) {
