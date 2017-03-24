@@ -77,7 +77,7 @@ class APILoader extends Loader implements LoaderInterface
     public function addNamespace($namespace, $hint)
     {
         $this->hints[$namespace] = $hint;
-        $this->laravelFileLoader->addNamespace($namespace, $hint);
+        //$this->laravelFileLoader->addNamespace($namespace, $hint);
     }
 
     /**
