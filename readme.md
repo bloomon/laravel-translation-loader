@@ -13,8 +13,16 @@ Adapted from [Wavvi/Translation](https://github.com/Waavi/translation) in order 
   Manually edit your composer.json file:
 
 	"require": {
-		"waavi/translation": "2.1.x"
+		"waavi/translation": "dev-load-from-microservice"
 	}
+  ...
+  "repositories": {
+    ...
+    {
+        "type": "vcs",
+        "url": "git@github.com:bloomon/laravel-translation-loader.git"
+    }
+  }
 
   Once installed, in your project's config/app.php file replace the following entry from the providers array:
 
@@ -57,7 +65,9 @@ Adapted from [Wavvi/Translation](https://github.com/Waavi/translation) in order 
 
 ## Commands
 
+  translator:flush
 
+flush translation cache. (if translation cache enabled)
 
 # Original Readme content:
 
