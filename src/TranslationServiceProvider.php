@@ -77,9 +77,11 @@ class TranslationServiceProvider extends LaravelTranslationServiceProvider
                     $loader            = new FileLoader($defaultLocale, $laravelFileLoader);
                     break;
                 default: case 'api':
+                    $apiHost           = $app['config']->get('translator.apiHost');
                     $apiUri            = $app['config']->get('translator.apiUri');
                     $apiPort           = $app['config']->get('translator.apiPort');
-                    $loader            = new APILoader($defaultLocale, $apiUri.':'.$apiPort);
+                    $apiUrl = $apiHost . ($apiPort ? ':'.$apiPort : '') . $apiUri;
+                    $loader         = new APILoader($defaultLocale, $apiUrl);
                     break;
             }
             if ($app['config']->get('translator.cache.enabled')) {

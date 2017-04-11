@@ -15,7 +15,7 @@ return [
     |   'api'           Use the bloomon-translation API as the exclusive source for language entries.
     |   'files'         Use files as the exclusive source for language entries [Laravel's default].
      */
-    'source'            => env('TRANSLATION_SOURCE', 'mixed'),
+    'source'            => env('TRANSLATION_SOURCE', 'api'),
 
     // In case the files source is selected, please enter here the supported locales for your app.
     // Ex: ['en', 'es', 'fr']
@@ -38,7 +38,7 @@ return [
         'suffix'  => env('TRANSLATION_CACHE_SUFFIX', 'translation'),
     ],
 
-    'apiHost'            => env('TRANSLATION_API_HOST', 'translation'),
-    'apiUri'            => env('TRANSLATION_API_URI', '/translations'),
-    'apiPort'           => env('TRANSLATION_API_PORT', 3030)
+    'apiHost'            => env('TRANSLATION_API_HOST'),
+    'apiUri'            => env('TRANSLATION_API_URI'),
+    'apiPort'           => env('TRANSLATION_API_PORT')
 ];

@@ -56,10 +56,10 @@ class APILoader extends Loader implements LoaderInterface
         $data = [];
 
         foreach ($rawData as $key => $translation) {
-          if ($group && substr($key, 0, strlen($group))==$group) {
+          if ($group && substr($key, 0, strlen($group)+1)==$group.'.') {
             $key = substr($key, strlen($group)+1);
           }
-          $data[$key] = $translation;
+          $data[$key] = $translation===null ? '' : $translation;
         }
 
         return $data;
